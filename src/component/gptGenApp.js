@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 
 function ImageGenApp() {
   const [inputTextA, setInputTextA] = useState('');
@@ -10,15 +12,18 @@ function ImageGenApp() {
   const [inputFeature3, setInputFeature3] = useState('');
 
   const [imageUrls, setImageUrls] = useState(['', '', '', '', '']);
-
   const [loading, setLoading] = useState(false);
+
+  const hasImages = imageUrls.some(url => url !== '');
 
   const handleGenerate = async () => {
     try{
         setLoading(true); // ローディング開始
         const imageResponse = await axios.post('https://api.openai.com/v1/images/generations', {
         prompt: `Create an image of a new vegetable that combines the characteristics of a ${inputTextA} and a ${inputTextB}. 
+        It feels so close to the real thing.
         The image should have a transparent background.
+        One piece.
         The new vegetable should have the following characteristics:
         1. ${inputFeature1}
         2. ${inputFeature2}
@@ -44,6 +49,22 @@ function ImageGenApp() {
     } finally {
         setLoading(false); // ローディング終了
     }
+  };
+  const handleBulkDownload = async () => {
+    const zip = new JSZip();
+
+    // 画像を一つずつZIPに追加
+    imageUrls.forEach((url, index) => {
+      if (url) {
+        const filename = `generated_image_${index + 1}.png`;
+        zip.file(filename, fetch(url).then(res => res.blob()));
+      }
+    });
+
+    // ZIPファイルを生成してダウンロード
+    zip.generateAsync({ type: 'blob' }).then((content) => {
+      saveAs(content, 'images.zip');
+    });
   };
 
   return (
@@ -116,7 +137,14 @@ function ImageGenApp() {
         {imageUrls.map((imageUrl, index) => (
         imageUrl && <img key={index} src={imageUrl} alt={`Generated ${index}`} style={{ maxWidth: '100px', height: 'auto' }} />
       ))}
-    </div>
+        </div>
+        <div>
+            {hasImages && (
+                <button onClick={handleBulkDownload}>
+                    すべてダウンロード
+                </button>
+            )}
+        </div>
     </div>
   );
 }
