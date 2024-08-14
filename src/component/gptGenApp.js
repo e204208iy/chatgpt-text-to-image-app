@@ -12,6 +12,7 @@ function ImageGenApp() {
   const [inputFeature3, setInputFeature3] = useState('');
 
   const [imageUrls, setImageUrls] = useState(['', '', '', '', '']);
+//   const [imageUrls, setImageUrls] = useState(['']);
   const [loading, setLoading] = useState(false);
 
   const hasImages = imageUrls.some(url => url !== '');
@@ -23,7 +24,7 @@ function ImageGenApp() {
         prompt: `Create an image of a new vegetable that combines the characteristics of a ${inputTextA} and a ${inputTextB}. 
         It feels so close to the real thing.
         The image should have a transparent background.
-        One piece.
+        Please only include one vegetable in the image.
         The new vegetable should have the following characteristics:
         1. ${inputFeature1}
         2. ${inputFeature2}
@@ -43,29 +44,37 @@ function ImageGenApp() {
             newUrls[i] = imageResponse.data.data[i].url; // 各要素に新しい値を代入
         }
         setImageUrls(newUrls); // 状態を更新
+
         console.log('成功');
+        console.log(newUrls);
     } catch (error) {
         console.error('Error generating images:', error);
     } finally {
         setLoading(false); // ローディング終了
     }
   };
-  const handleBulkDownload = async () => {
-    const zip = new JSZip();
+    const handleDownloadZip = async () => {
+        const zip = new JSZip();
+        const imgFolder = zip.folder('images');
 
-    // 画像を一つずつZIPに追加
-    imageUrls.forEach((url, index) => {
-      if (url) {
-        const filename = `generated_image_${index + 1}.png`;
-        zip.file(filename, fetch(url).then(res => res.blob()));
-      }
-    });
+        try {
+        // Fetch and add each image to the ZIP
+        await Promise.all(imageUrls.map(async (url, index) => {
+            if (url) {
+            const response = await axios.get(`http://localhost:5000/image-proxy?imageUrl=${encodeURIComponent(url)}`, {
+                responseType: 'arraybuffer',
+            });
+            imgFolder.file(`image-${index}.png`, response.data);
+            }
+        }));
 
-    // ZIPファイルを生成してダウンロード
-    zip.generateAsync({ type: 'blob' }).then((content) => {
-      saveAs(content, 'images.zip');
-    });
-  };
+        // Generate and download the ZIP file
+        const zipBlob = await zip.generateAsync({ type: 'blob' });
+        saveAs(zipBlob, 'images.zip');
+        } catch (error) {
+        console.error('Error downloading images as ZIP', error);
+        }
+    };
 
   return (
     <div>
@@ -140,7 +149,7 @@ function ImageGenApp() {
         </div>
         <div>
             {hasImages && (
-                <button onClick={handleBulkDownload}>
+                <button onClick={handleDownloadZip}>
                     すべてダウンロード
                 </button>
             )}
