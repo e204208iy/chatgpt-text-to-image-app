@@ -79,81 +79,93 @@ function ImageGenApp() {
   return (
     <div>
       <h1>新しい野菜のイメージを生成AIで作ってみよう</h1>
+      <div>
+        <h2>1. 好きな野菜を２つ入力しよう</h2>
+      </div>
       <div className='flex-container'>
-        <div>
-            <h2 className='vegetable'>野菜A</h2>
+        <div className='input-vegetable'>
+            <h2 className='vegetable'>野菜 A 🍅</h2>
             <input
                 type="text"
                 size="30"
                 value={inputTextA}
                 onChange={(e) => setInputTextA(e.target.value)}
-                placeholder="Enter text like 'cucumber'"
+                placeholder="　例）トマト"
+                className='input-text'
             />
         </div>
         <div>
             <h1>➕</h1>
         </div>
-        <div>
-            <h2 className='vegetable'>野菜B</h2>
+        <div className='input-vegetable'>
+            <h2 className='vegetable'>野菜 B 🍆</h2>
             <input
                 type="text"
                 size="30"
                 value={inputTextB}
                 onChange={(e) => setInputTextB(e.target.value)}
-                placeholder="Enter text like 'carrot'"
+                placeholder="　例）なす"
+                className='input-text'
             />
         </div>
       </div>
-      <div>
-        <h2>特徴は？（例えば、「病気に強い」「収穫量が多い」...）</h2>
+      <div className='head-2'>
+        <h2>2. 特徴は？（例えば、「病気に強い」「収穫量が多い」...）</h2>
       </div>
       <div>
         <div className='feature-input-container'>
-            <h3>特徴1　:　</h3>
+            <h2>特徴１　:　</h2>
             <input
                 type="text"
-                size="50"
+                size="55"
                 value={inputFeature1}
                 onChange={(e) => setInputFeature1(e.target.value)}
-                placeholder="Enter text like 'disease-resistant varieties'"
+                placeholder="　Enter text like 'disease-resistant varieties'"
+                className='input-text'
             />
         </div>
         <div className='feature-input-container'>
-            <h3>特徴2　:　</h3>
+            <h2>特徴２　:　</h2>
             <input
                 type="text"
-                size="50"
+                size="55"
                 value={inputFeature2}
                 onChange={(e) => setInputFeature2(e.target.value)}
-                placeholder="Enter text like 'disease-resistant varieties'"
+                placeholder="　Enter text like 'disease-resistant varieties'"
+                className='input-text'
             />
         </div>
         <div className='feature-input-container'>
-            <h3>特徴3　:　</h3>
+            <h2>特徴３　:　</h2>
             <input
                 type="text"
-                size="50"
+                size="55"
                 value={inputFeature3}
                 onChange={(e) => setInputFeature3(e.target.value)}
-                placeholder="Enter text like 'disease-resistant varieties'"
+                placeholder="　Enter text like 'disease-resistant varieties'"
+                className='input-text'
             />
         </div>
       </div>
-        <button onClick={handleGenerate} disabled={loading}>
+        <button onClick={handleGenerate} disabled={loading} className='btn_19'>
             {loading ? '生成中です...' : '生成する'}
         </button>
-        <div style={{ display: 'flex', gap: '10px' }}>
+
+        <div className='images-container'>
         {imageUrls.map((imageUrl, index) => (
-        imageUrl && <img key={index} src={imageUrl} alt={`Generated ${index}`} style={{ maxWidth: '100px', height: 'auto' }} />
-      ))}
+            imageUrl && <img key={index} src={imageUrl} alt={`Generated ${index}`} style={{ maxWidth: '100px', height: 'auto' }} />
+        ))}
         </div>
         <div>
             {hasImages && (
-                <button onClick={handleDownloadZip}>
+                <button onClick={handleDownloadZip} className='btn_19'>
                     すべてダウンロード
                 </button>
             )}
         </div>
+        <footer className='footer'>
+          <p>© 2024 久留米工業大学 AI応用研究所</p>
+        </footer>
     </div>
   );
 }
