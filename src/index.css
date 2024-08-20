@@ -29,6 +29,7 @@ code {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-bottom: 10px;
 }
 .input-vegetable {
   text-align: center;
@@ -87,6 +88,9 @@ code {
   gap: 10px;
   padding-top: 17px;
   padding-bottom: 17px;
+}
+.advice {
+  width: 50%;
 }
 
 .footer {
