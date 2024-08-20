@@ -80,9 +80,11 @@ code {
 }
 .btn_19:hover {
 	color: #27acd9;
-	background: #fff;
+	background: hsl(0, 0%, 100%);
 }
-
+.advice-container {
+  padding-top: 10px;
+}
 .images-container {
   display: flex,;
   gap: 10px;

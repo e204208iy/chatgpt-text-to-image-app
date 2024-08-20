@@ -143,7 +143,7 @@ function ImageGenApp() {
 
         <div className='images-container'>
         {imageUrls.map((imageUrl, index) => (
-            imageUrl && <img key={index} src={imageUrl} alt={`Generated ${index}`} style={{ maxWidth: '100px', height: 'auto' }} />
+            imageUrl && <img key={index} src={imageUrl} alt={`Generated ${index}`} style={{ maxWidth: '120px', height: 'auto' }} />
         ))}
         </div>
         <div className='download-button'>
@@ -156,8 +156,8 @@ function ImageGenApp() {
     <div className='head-2'>
         <h1>野菜アドバイザー</h1>
         <h2>特徴は？（例えば、「病気に強い」「収穫量が多い」...）</h2>
-      </div>
-      <div>
+    </div>
+    <div>
         <div className='feature-input-container'>
             <h2>特徴１　:　</h2>
             <input
@@ -180,25 +180,23 @@ function ImageGenApp() {
                 className='input-text'
             />
         </div>
-        <div className='feature-input-container'>
-            <h2>特徴３　:　</h2>
-            <input
-                type="text"
-                size="55"
-                value={inputFeature3}
-                onChange={(e) => setInputFeature3(e.target.value)}
-                placeholder="　Enter text like 'disease-resistant varieties'"
-                className='input-text'
-            />
+            <div className='feature-input-container'>
+                <h2>特徴３　:　</h2>
+                <input
+                    type="text"
+                    size="55"
+                    value={inputFeature3}
+                    onChange={(e) => setInputFeature3(e.target.value)}
+                    placeholder="　Enter text like 'disease-resistant varieties'"
+                    className='input-text'
+                />
+            </div>
         </div>
-      </div>
-        <div className='advice-container'>
-            <button onClick={handleSubmit} className='btn_19'>アドバイスを生成</button>
-            {adviseIsLoading ? (
-                <p>読み込み中...</p>
-            ) : (
-                <div className='advice'>{advice}</div>
-            )}
+        <div style={{ maxWidth: '600px', height: 'auto' }}>
+            <button onClick={handleSubmit} className='btn_19'>{adviseIsLoading ? '生成中です...' : 'アドバイスを生成'}</button>
+            <div className='advice-container'>
+                {advice}
+            </div>
         </div>
 
         <footer className='footer'>
