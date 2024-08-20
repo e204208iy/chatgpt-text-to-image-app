@@ -12,7 +12,6 @@ function ImageGenApp() {
   const [inputFeature3, setInputFeature3] = useState('');
 
   const [imageUrls, setImageUrls] = useState(['', '', '', '', '']);
-//   const [imageUrls, setImageUrls] = useState(['']);
   const [loading, setLoading] = useState(false);
 
   const hasImages = imageUrls.some(url => url !== '');
@@ -100,6 +99,9 @@ function ImageGenApp() {
           console.error('Error:', error);
           setAdvice('エラーが発生しました。もう一度お試しください。');
         }
+        setInputFeature1('');
+        setInputFeature2('');
+        setInputFeature3('');
     
         setAdviseIsLoading(false);
       };
@@ -138,7 +140,7 @@ function ImageGenApp() {
         </div>
       </div>
         <button onClick={handleGenerate} disabled={loading} className='btn_19'>
-            {loading ? '生成中です...' : '生成する'}
+            {loading ? '生成中です...' : '画像を生成する'}
         </button>
 
         <div className='images-container'>
