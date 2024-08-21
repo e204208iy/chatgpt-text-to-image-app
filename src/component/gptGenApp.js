@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import axios from 'axios';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
+import debounce from 'lodash/debounce';
 
 function ImageGenApp() {
   const [inputTextA, setInputTextA] = useState('');
@@ -19,6 +20,90 @@ function ImageGenApp() {
   const [advice, setAdvice] = useState('');
   const [adviseIsLoading, setAdviseIsLoading] = useState(false);
 
+  const [translatedText, setTranslatedText] = useState('');
+
+  const debouncedTranslateA = useCallback(
+    debounce(async (text) => {
+      if (text) {
+        try {
+          const response = await axios.post(
+            'https://api.openai.com/v1/chat/completions',
+            {
+              model: "gpt-3.5-turbo",
+              messages: [
+                {"role": "system", "content": "You are a translator. Translate the following Japanese text to English."},
+                {"role": "user", "content": `${text}. Within 7 characters. No "." needed`}
+              ]
+            },
+            {
+              headers: {
+                'Authorization': process.env.REACT_APP_CHATGPT_API_KEY,
+                'Content-Type': 'application/json'
+              }
+            }
+          );
+          console.log("英語に翻訳するAPIが発火");
+          setInputTextA(response.data.choices[0].message.content.trim());
+        //   setTranslatedText(response.data.choices[0].message.content.trim());
+        } catch (error) {
+          console.error('Translation error:', error);
+        }
+      } else {
+        setInputTextA('');
+        // setTranslatedText('');
+      }
+    }, 2000), // 2秒の遅延
+    []
+  );
+
+  const debouncedTranslateB = useCallback(
+    debounce(async (text) => {
+      if (text) {
+        try {
+          const response = await axios.post(
+            'https://api.openai.com/v1/chat/completions',
+            {
+              model: "gpt-3.5-turbo",
+              messages: [
+                {"role": "system", "content": "You are a translator. Translate the following Japanese text to English."},
+                {"role": "user", "content": `${text}. Within 7 characters. No "." needed`}
+              ]
+            },
+            {
+              headers: {
+                'Authorization': process.env.REACT_APP_CHATGPT_API_KEY,
+                'Content-Type': 'application/json'
+              }
+            }
+          );
+          console.log("英語に翻訳するAPIが発火");
+          setInputTextB(response.data.choices[0].message.content.trim());
+        //   setTranslatedText(response.data.choices[0].message.content.trim());
+        } catch (error) {
+          console.error('Translation error:', error);
+        }
+      } else {
+        setInputTextB('');
+        // setTranslatedText('');
+      }
+    }, 2000), // 2秒の遅延
+    []
+  );
+
+  const handleInputChangeA = (e) => {
+    const text = e.target.value;
+    setInputTextA(text);
+
+    // Debounced API call
+    debouncedTranslateA(text);
+  };
+  const handleInputChangeB = (e) => {
+    const text = e.target.value;
+    setInputTextB(text);
+
+    // Debounced API call
+    debouncedTranslateB(text);
+  };
 
   const handleGenerate = async () => {
     try{
@@ -119,7 +204,7 @@ function ImageGenApp() {
                 type="text"
                 size="30"
                 value={inputTextA}
-                onChange={(e) => setInputTextA(e.target.value)}
+                onChange={handleInputChangeA}
                 placeholder="　例）トマト"
                 className='input-text'
             />
@@ -133,7 +218,7 @@ function ImageGenApp() {
                 type="text"
                 size="30"
                 value={inputTextB}
-                onChange={(e) => setInputTextB(e.target.value)}
+                onChange={handleInputChangeB}
                 placeholder="　例）なす"
                 className='input-text'
             />
