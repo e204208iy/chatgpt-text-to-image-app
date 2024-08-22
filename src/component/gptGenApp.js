@@ -12,7 +12,7 @@ function ImageGenApp() {
   const [inputFeature2, setInputFeature2] = useState('');
   const [inputFeature3, setInputFeature3] = useState('');
 
-  const [imageUrls, setImageUrls] = useState(['', '', '', '', '']);
+  const [imageUrls, setImageUrls] = useState(['', '', '', '', '','']);
   const [loading, setLoading] = useState(false);
 
   const hasImages = imageUrls.some(url => url !== '');
@@ -86,7 +86,7 @@ function ImageGenApp() {
         setInputTextB('');
         // setTranslatedText('');
       }
-    }, 2000), // 2秒の遅延
+    }, 1500), // 2秒の遅延
     []
   );
 
@@ -109,9 +109,14 @@ function ImageGenApp() {
     try{
         setLoading(true); // ローディング開始
         const imageResponse = await axios.post('https://api.openai.com/v1/images/generations', {
-        prompt: `Create an image of a groundbreaking hybrid vegetable that seamlessly combines the edible parts of a ${inputTextA} and a ${inputTextB}. The hybrid should be a unique and naturally integrated vegetable, blending the characteristics of both ${inputTextA} and ${inputTextB} into a cohesive whole. The image should depict only one entire, fully intact hybrid vegetable without any cross-sectional views, slices, or cuts. Do not include any other vegetables, parts, or background elements in the image. The hybrid should appear as a single, natural vegetable, as if it could exist in the real world.The subject must be one individual and uncut.The background must be plain white, with nothing else visible.
+        prompt: `Create an image of a groundbreaking hybrid vegetable that seamlessly combines the edible parts of a ${inputTextA} and a ${inputTextB}. 
+        The hybrid should be a unique and naturally integrated vegetable, blending the characteristics of both ${inputTextA} and ${inputTextB} into a cohesive whole.
+         The image should depict only one entire, fully intact hybrid vegetable without any cross-sectional views, slices, or cuts. 
+         Do not include any other vegetables, parts, or background elements in the image. 
+         The hybrid should appear as a single, natural vegetable, as if it could exist in the real world.The subject must be one individual and uncut.
+         The background must be plain white, with nothing else visible.
         `,
-        n: 5,
+        n: 6,
         size: '256x256',
         }, {
         headers: {
@@ -134,28 +139,6 @@ function ImageGenApp() {
         setLoading(false); // ローディング終了
     }
   };
-    const handleDownloadZip = async () => {
-        const zip = new JSZip();
-        const imgFolder = zip.folder('images');
-
-        try {
-        // Fetch and add each image to the ZIP
-        await Promise.all(imageUrls.map(async (url, index) => {
-            if (url) {
-            const response = await axios.get(`http://localhost:5000/image-proxy?imageUrl=${encodeURIComponent(url)}`, {
-                responseType: 'arraybuffer',
-            });
-            imgFolder.file(`image-${index}.png`, response.data);
-            }
-        }));
-
-        // Generate and download the ZIP file
-        const zipBlob = await zip.generateAsync({ type: 'blob' });
-        saveAs(zipBlob, 'images.zip');
-        } catch (error) {
-        console.error('Error downloading images as ZIP', error);
-        }
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -193,99 +176,100 @@ function ImageGenApp() {
     
   return (
     <div>
-      <h1>新しい野菜のイメージを生成AIで作ってみよう</h1>
-      <div>
-        <h2>好きな野菜を２つ入力しよう</h2>
-      </div>
-      <div className='flex-container'>
-        <div className='input-vegetable'>
-            <h2 className='vegetable'>野菜 A 🍅</h2>
-            <input
-                type="text"
-                size="30"
-                value={inputTextA}
-                onChange={handleInputChangeA}
-                placeholder="　例）トマト"
-                className='input-text'
-            />
+        <div className='task-1-container'>
+            <h1 className='head-text'>1. 新しい野菜のイメージを<spqn className="accent">生成AI</spqn>で作ってみよう</h1>
+            <div>
+                <h2>好きな野菜を２つ入力しよう</h2>
+            </div>
+            <div className='flex-container'>
+                <div className='input-vegetable'>
+                    <h2 className='vegetable'>野菜 A 🍅</h2>
+                    <input
+                        type="text"
+                        size="35"
+                        value={inputTextA}
+                        onChange={handleInputChangeA}
+                        placeholder="　例）トマト "
+                        className='input-text'
+                    />
+                </div>
+                <div>
+                    <h1>➕</h1>
+                </div>
+                <div className='input-vegetable'>
+                    <div className="vegetableB">
+                        <h2 className='vegetable'>野菜 B </h2>
+                        <img src={`${process.env.PUBLIC_URL}/okura.jpeg`} alt="Sample" className="resized-image-okura" />
+                    </div>
+                    <input
+                        type="text"
+                        size="35"
+                        value={inputTextB}
+                        onChange={handleInputChangeB}
+                        placeholder="　例）オクラ"
+                        className='input-text'
+                    />
+                </div>
+            </div>
+            <button onClick={handleGenerate} disabled={loading} className='btn_19'>
+                {loading ? '生成中です...' : '画像を生成する'}
+            </button>
+            <div className='union-vegetable-text'>
+                <p>「{inputTextA}」と「{inputTextB}」を<span style={{ fontWeight: 'bold' }}>ChatGPT</span>で合成すると...</p>
+            </div>
+            <div className='images-container'>
+                {imageUrls.map((imageUrl, index) => (
+                    imageUrl && <img key={index} src={imageUrl} alt={`Generated ${index}`} style={{ maxWidth: '130px', height: 'auto' }} />
+                ))}
+            </div>
         </div>
-        <div>
-            <h1>➕</h1>
-        </div>
-        <div className='input-vegetable'>
-            <h2 className='vegetable'>野菜 B 🍆</h2>
-            <input
-                type="text"
-                size="30"
-                value={inputTextB}
-                onChange={handleInputChangeB}
-                placeholder="　例）なす"
-                className='input-text'
-            />
-        </div>
-      </div>
-        <button onClick={handleGenerate} disabled={loading} className='btn_19'>
-            {loading ? '生成中です...' : '画像を生成する'}
-        </button>
-
-        <div className='images-container'>
-        {imageUrls.map((imageUrl, index) => (
-            imageUrl && <img key={index} src={imageUrl} alt={`Generated ${index}`} style={{ maxWidth: '120px', height: 'auto' }} />
-        ))}
-        </div>
-        <div className='download-button'>
-            {hasImages && (
-                <button onClick={handleDownloadZip} className='btn_19'>
-                    すべてダウンロード
-                </button>
-            )}
-        </div>
-    <div className='head-2'>
-        <h1>野菜アドバイザー</h1>
-        <h2>特徴は？（例えば、「病気に強い」「収穫量が多い」...）</h2>
-    </div>
-    <div>
-        <div className='feature-input-container'>
-            <h2>特徴１　:　</h2>
-            <input
-                type="text"
-                size="55"
-                value={inputFeature1}
-                onChange={(e) => setInputFeature1(e.target.value)}
-                placeholder="　Enter text like 'disease-resistant varieties'"
-                className='input-text'
-            />
-        </div>
-        <div className='feature-input-container'>
-            <h2>特徴２　:　</h2>
-            <input
-                type="text"
-                size="55"
-                value={inputFeature2}
-                onChange={(e) => setInputFeature2(e.target.value)}
-                placeholder="　Enter text like 'disease-resistant varieties'"
-                className='input-text'
-            />
-        </div>
-            <div className='feature-input-container'>
-                <h2>特徴３　:　</h2>
+        <div className='task-2-container'>
+            <div className='head-2'>
+                <h1 className='head-text'>2. 野菜アドバイザー</h1>
+                <h2>特徴は？（例えば、「病気に強い」「収穫量が多い」...）</h2>
+            </div>
+            <div>
+                <div className='feature-input-container'>
+                <h2>特徴１　:　</h2>
                 <input
                     type="text"
                     size="55"
-                    value={inputFeature3}
-                    onChange={(e) => setInputFeature3(e.target.value)}
-                    placeholder="　Enter text like 'disease-resistant varieties'"
+                    value={inputFeature1}
+                    onChange={(e) => setInputFeature1(e.target.value)}
+                    placeholder="　病気に強い品種"
                     className='input-text'
                 />
+                </div>
+                <div className='feature-input-container'>
+                    <h2>特徴２　:　</h2>
+                    <input
+                        type="text"
+                        size="55"
+                        value={inputFeature2}
+                        onChange={(e) => setInputFeature2(e.target.value)}
+                        placeholder="　収穫量が多い"
+                        className='input-text'
+                    />
+                </div>
+                <div className='feature-input-container'>
+                    <h2>特徴３　:　</h2>
+                    <input
+                        type="text"
+                        size="55"
+                        value={inputFeature3}
+                        onChange={(e) => setInputFeature3(e.target.value)}
+                        placeholder="　全然美味しくない野菜"
+                        className='input-text'
+                    />
+                </div>
+            </div>
+            <div style={{ maxWidth: '600px', height: 'auto' }}>
+                <button onClick={handleSubmit} className='btn_19'>{adviseIsLoading ? '生成中です...' : 'アドバイスを生成'}</button>
+                <div className='advice-container'>
+                    {advice}
+                </div>
             </div>
         </div>
-        <div style={{ maxWidth: '600px', height: 'auto' }}>
-            <button onClick={handleSubmit} className='btn_19'>{adviseIsLoading ? '生成中です...' : 'アドバイスを生成'}</button>
-            <div className='advice-container'>
-                {advice}
-            </div>
-        </div>
-
         <footer className='footer'>
           <p>© 2024 久留米工業大学 AI応用研究所</p>
         </footer>
