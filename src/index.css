@@ -157,10 +157,13 @@ code {
   padding-top: 17px;
   padding-bottom: 17px;
 }
+
 .advice {
   width: 50%;
 }
-
+.advice-text {
+  font-size: 20px;
+}
 .footer {
   padding-top: 70px;
 }

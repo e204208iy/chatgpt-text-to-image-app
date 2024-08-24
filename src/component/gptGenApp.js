@@ -1,8 +1,7 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import axios from 'axios';
-import JSZip from 'jszip';
-import { saveAs } from 'file-saver';
 import debounce from 'lodash/debounce';
+import Tooltip from './toolTip';
 
 function ImageGenApp() {
   const [inputTextA, setInputTextA] = useState('');
@@ -15,12 +14,12 @@ function ImageGenApp() {
   const [imageUrls, setImageUrls] = useState(['', '', '', '', '','']);
   const [loading, setLoading] = useState(false);
 
-  const hasImages = imageUrls.some(url => url !== '');
+//   const [advice, setAdvice] = useState('');
+  const adviceRef = useRef('');
+  const intervalIdRef = useRef(null);
 
-  const [advice, setAdvice] = useState('');
   const [adviseIsLoading, setAdviseIsLoading] = useState(false);
-
-  const [translatedText, setTranslatedText] = useState('');
+  const [displayedAdvice, setDisplayedAdvice] = useState('');
 
   const debouncedTranslateA = useCallback(
     debounce(async (text) => {
@@ -143,6 +142,7 @@ function ImageGenApp() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setAdviseIsLoading(true);
+        setDisplayedAdvice('');
     
         try {
           const response = await axios.post(
@@ -161,17 +161,33 @@ function ImageGenApp() {
               }
             }
           );
-    
-          setAdvice(response.data.choices[0].message.content);
+          adviceRef.current = response.data.choices[0].message.content;
+          animateAdvice();
+        //   setAdvice(response.data.choices[0].message.content);
         } catch (error) {
           console.error('Error:', error);
-          setAdvice('エラーが発生しました。もう一度お試しください。');
+        //   setAdvice('エラーが発生しました。もう一度お試しください。');
         }
         setInputFeature1('');
         setInputFeature2('');
         setInputFeature3('');
     
         setAdviseIsLoading(false);
+      };
+      const animateAdvice = () => {
+        let index = -1;
+        if (intervalIdRef.current) {
+          clearInterval(intervalIdRef.current);
+        }
+    
+        intervalIdRef.current = setInterval(() => {
+          setDisplayedAdvice((prev) => prev + adviceRef.current.charAt(index));
+          index++;
+    
+          if (index >= adviceRef.current.length) {
+            clearInterval(intervalIdRef.current);
+          }
+        }, 100); // 100msごとに文字を追加
       };
     
   return (
@@ -225,7 +241,12 @@ function ImageGenApp() {
         </div>
         <div className='task-2-container'>
             <div className='head-2'>
-                <h1 className='head-text'>2. 野菜アドバイザー</h1>
+                <h1 className='head-text'>2. 野菜の専門家 ChatGPTさん</h1>
+                <div>
+                    <Tooltip text="This is a tooltip!">
+                    野菜の専門家 ChatGPTさんとは?
+                    </Tooltip>
+                </div>  
                 <h2>特徴は？（例えば、「病気に強い」「収穫量が多い」...）</h2>
             </div>
             <div>
@@ -247,7 +268,7 @@ function ImageGenApp() {
                         size="55"
                         value={inputFeature2}
                         onChange={(e) => setInputFeature2(e.target.value)}
-                        placeholder="　収穫量が多い"
+                        placeholder="　収穫量が多いトマト"
                         className='input-text'
                     />
                 </div>
@@ -266,7 +287,13 @@ function ImageGenApp() {
             <div style={{ maxWidth: '600px', height: 'auto' }}>
                 <button onClick={handleSubmit} className='btn_19'>{adviseIsLoading ? '生成中です...' : 'アドバイスを生成'}</button>
                 <div className='advice-container'>
-                    {advice}
+                    <div className='advice-text'>
+                        {displayedAdvice && (
+                            <h3>"ChatGPTさんからのアドバイス"</h3>
+                        )}
+                        {displayedAdvice}
+
+                    </div>
                 </div>
             </div>
         </div>
