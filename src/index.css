@@ -191,7 +191,10 @@ code {
   padding-top: 17px;
   padding-bottom: 17px;
 }
-
+.images-container img {
+  margin: 2px; /* 好きな隙間の大きさに調整 */
+  text-align: center;
+}
 .advice {
   width: 50%;
 }
