@@ -195,7 +195,7 @@ function ImageGenApp() {
         <div className='task-1-container'>
             <h1 className='head-text'>1. 新しい野菜のイメージを<spqn className="accent">生成AI</spqn>で作ってみよう</h1>
             <div>
-                <h2>好きな野菜を２つ入力しよう</h2>
+                <h2 className='head-text2'>好きな野菜を２つ入力しよう</h2>
             </div>
             <div className='flex-container'>
                 <div className='input-vegetable'>
@@ -247,11 +247,11 @@ function ImageGenApp() {
                     野菜の専門家 ChatGPTさんとは?
                     </Tooltip>
                 </div>  
-                <h2>特徴は？（例えば、「病気に強い」「収穫量が多い」...）</h2>
+                <h2 className='head-text2'>特徴は？（例えば、「病気に強い」「収穫量が多い」...）</h2>
             </div>
             <div>
                 <div className='feature-input-container'>
-                <h2>特徴１　:　</h2>
+                <h2 className='features'>特徴１　:　</h2>
                 <input
                     type="text"
                     size="55"
@@ -262,7 +262,7 @@ function ImageGenApp() {
                 />
                 </div>
                 <div className='feature-input-container'>
-                    <h2>特徴２　:　</h2>
+                    <h2 className='features'>特徴２　:　</h2>
                     <input
                         type="text"
                         size="55"
@@ -273,7 +273,7 @@ function ImageGenApp() {
                     />
                 </div>
                 <div className='feature-input-container'>
-                    <h2>特徴３　:　</h2>
+                    <h2 className='features'>特徴３　:　</h2>
                     <input
                         type="text"
                         size="55"

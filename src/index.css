@@ -13,12 +13,6 @@ body {
   justify-content: center;
   flex-flow: column;
 }
-.task-1-container {
-
-}
-.task-2-container {
-
-}
 .accent {
   color:#d4461f;
 }
@@ -28,8 +22,25 @@ body {
 }
 
 @media screen and (max-width: 768px) {
+  .head-text {
+    font-size: 24px; /* タブレット以上のサイズ */
+    text-align: center;
+  }
+  .head-text2 {
+    font-size: 18px; /* タブレット以上のサイズ */
+    text-align: center;
+  }
   .resized-image {
     width: 90%; /* スマートフォン画面では画像を画面幅の90%に設定 */
+  }
+  .task-1-container {
+    padding: 6px;
+  }
+  .task-2-container {
+    padding: 6px;
+  }
+  .features {
+    font-size: 20px; /* タブレット以上のサイズ */
   }
 }
 
