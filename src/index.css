@@ -26,6 +26,18 @@ body {
   width: 380px;  /* 希望の幅 */
   height: auto;  /* アスペクト比を維持 */
 }
+
+@media screen and (max-width: 768px) {
+  .resized-image {
+    width: 90%; /* スマートフォン画面では画像を画面幅の90%に設定 */
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .resized-image {
+    width: 100%; /* さらに小さな画面では画像を画面幅いっぱいに設定 */
+  }
+}
 .resized-image-okura{
   width: 30px;  /* 希望の幅 */
   height: auto;  /* アスペクト比を維持 */

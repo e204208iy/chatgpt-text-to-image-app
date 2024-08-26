@@ -109,11 +109,11 @@ function ImageGenApp() {
         setLoading(true); // ローディング開始
         const imageResponse = await axios.post('https://api.openai.com/v1/images/generations', {
         prompt: `Create an image of a groundbreaking hybrid vegetable that seamlessly combines the edible parts of a ${inputTextA} and a ${inputTextB}. 
-        The hybrid should be a unique and naturally integrated vegetable, blending the characteristics of both ${inputTextA} and ${inputTextB} into a cohesive whole.
-         The image should depict only one entire, fully intact hybrid vegetable without any cross-sectional views, slices, or cuts. 
-         Do not include any other vegetables, parts, or background elements in the image. 
-         The hybrid should appear as a single, natural vegetable, as if it could exist in the real world.The subject must be one individual and uncut.
-         The background must be plain white, with nothing else visible.
+        The hybrid should be a unique and naturally integrated vegetable, blending the characteristics of both ${inputTextA} and ${inputTextB} into a cohesive whole. 
+        The image should depict only one entire, fully intact hybrid vegetable without any cross-sectional views, slices, or cuts. Do not include any other vegetables, parts, or background elements in the image. 
+        The hybrid should appear as a single, natural vegetable, as if it could exist in the real world.Be sure to comply with the following. 
+        Do not generate images of cross sections of vegetables or cut vegetables.The subject must be one individual and uncut.
+        The background must be plain white, with nothing else visible.
         `,
         n: 6,
         size: '256x256',
