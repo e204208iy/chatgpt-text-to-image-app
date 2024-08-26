@@ -42,6 +42,18 @@ body {
   .features {
     font-size: 20px; /* タブレット以上のサイズ */
   }
+  .images-container img {
+    margin: 10px; /* 好きな隙間の大きさに調整 */
+    text-align: center;
+  }
+  .images-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* 画像間の隙間 */
+    justify-content: center; /* 水平方向の中央揃え */
+    align-items: center; /* 垂直方向の中央揃え */
+    margin: 0 auto; /* 水平方向のセンタリング */
+  }
 }
 
 @media screen and (max-width: 480px) {
@@ -175,8 +187,7 @@ code {
   padding-top: 10px;
 }
 .images-container {
-  display: flex,;
-  gap: 10px;
+  align-items: center;
   padding-top: 17px;
   padding-bottom: 17px;
 }
